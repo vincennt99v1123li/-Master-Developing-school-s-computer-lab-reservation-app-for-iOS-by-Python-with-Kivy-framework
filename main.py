@@ -15,6 +15,7 @@ from kivy.lang import Builder
 from kivymd.uix.picker import MDDatePicker
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton, MDFlatButton
+from kivymd.uix.list import OneLineAvatarIconListItem
 
 #Window.size = (1000, 1000)
 import socket
@@ -45,6 +46,18 @@ class LoginPage(GridLayout):
             self.ids.pw.text = ''
             project_5327.screen_manager.current = 'test'
         pass
+
+#need to be modify
+class ItemConfirm(OneLineAvatarIconListItem):
+    divider = None
+
+    def set_icon(self, instance_check):
+        instance_check.active = True
+        check_list = instance_check.get_widgets(instance_check.group)
+        for check in check_list:
+            if check != instance_check:
+                check.active = False
+
 
 class TestPage(FloatLayout):
     def __init__(self, **kwargs):
@@ -88,6 +101,41 @@ class TestPage(FloatLayout):
         date_dialog.bind(on_save=self.on_save)
         date_dialog.open()
 
+    # need to be modify
+    def time_slot_picker(self):
+        btn1 = MDFlatButton(text="Yes",text_color=[0, 0, 1, 0])
+        #btn1.bind(on_press=self.logout_button)
+        my_dialog = MDDialog(
+                title="Phone ringtone",
+                type="confirmation",
+                items=[
+                    ItemConfirm(text="Callisto"),
+                    ItemConfirm(text="Luna"),
+                    ItemConfirm(text="Night"),
+                    ItemConfirm(text="Solo"),
+                    ItemConfirm(text="Phobos"),
+                    ItemConfirm(text="Diamond"),
+                    ItemConfirm(text="Sirena"),
+                    ItemConfirm(text="Red music"),
+                    ItemConfirm(text="Allergio"),
+                    ItemConfirm(text="Magic"),
+                    ItemConfirm(text="Tic-tac"),
+                ],
+                buttons=[
+                    MDFlatButton(
+                        text="CANCEL"
+
+
+                    ),
+                    MDFlatButton(
+                        text="OK"
+
+
+                    ),
+                ],
+            )
+        my_dialog.open()
+        pass
 
 
     def confirm_logout_popup(self):
