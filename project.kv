@@ -1,0 +1,247 @@
+<StartPage>
+
+    start:start
+
+    GridLayout:
+
+        cols: 1
+        size: root.width, root.height
+
+        MDLabel:
+
+            text: "Project 5327 App"
+            halign: "center"
+
+        MDRaisedButton:
+            id: start
+            text: "Start"
+
+            on_press: root.start_button()
+            size: 50, 100
+
+            size_hint: 0.5, 0.3
+
+
+
+
+
+
+
+<LoginPage>
+
+    username:username
+    pw:pw
+    login:login
+    BoxLayout:
+        size: root.width, root.height
+        padding: 50
+
+        FloatLayout:
+            pos_hint: {'center_y': 0.5}
+
+            MDTextField:
+                hint_text: "Username:"
+                helper_text: "This field is required"
+                helper_text_mode: "on_focus"
+                id: username
+			    multiline:False
+			    text:""
+			    pos_hint: {'x': 0, 'y': 0.6}
+
+            MDTextField:
+                hint_text: "Password:"
+                helper_text: "This field is required"
+                helper_text_mode: "on_focus"
+                id: pw
+		        multiline:False
+		        password: True
+			    text:""
+			    pos_hint: {'x': 0, 'y': 0.5}
+
+		    MDFillRoundFlatButton:
+		        id: login
+			    text: "Log In"
+                pos_hint: {'x': 0, 'y': 0.4}
+			    on_press: root.login_button()
+
+
+<TestPage>
+
+    input_box:input_box
+    input_address:input_address
+    input_port:input_port
+    send:send
+    select_file:select_file
+    date_label:date_label
+
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDToolbar:
+            title:"Project5327"
+
+        MDBottomNavigation:
+            MDBottomNavigationItem:
+                name: "TestPage"
+                text: 'Test'
+                icon: "developer-board"
+
+                ScrollView:
+                    size: self.size
+
+                    GridLayout:
+
+
+                        cols: 1
+                        size_hint_y: None
+                        row_default_height: '100dp'
+                        row_force_default: True
+                        minimum_height: self.height
+                        height: self.minimum_height
+
+
+
+                        Label:
+                            color: 0.4, 0.5, 0.6, 1
+                            text: "Type something: "
+
+                        TextInput:
+                            id: input_box
+		                    multiline:True
+
+		                Label:
+		                    color: 0.4, 0.5, 0.6, 1
+                            text: "Address number: "
+
+                        TextInput:
+                            id: input_address
+		                    multiline:True
+
+    	                Label:
+    	                    color: 0.4, 0.5, 0.6, 1
+                            text: "Port: "
+
+                        TextInput:
+                            id: input_port
+		                    multiline:True
+
+
+                        GridLayout:
+                            cols: 2
+
+		                    MDRaisedButton:
+		                        id: send
+		        	            text: "Send"
+		        	            font_size: 35
+		                        background_color: 0.4, 0.5, 0.6, 1
+		                        size_hint: 0.5, 0.3
+		                        on_press: root.send_button()
+
+		                    MDRaisedButton:
+		                        id: select_file
+		                        text: "Select File"
+		                        font_size: 35
+		                        background_color: 0.4, 0.5, 0.6, 1
+		                        size_hint: 0.5, 0.3
+		        	            on_press: root.file_button()
+
+            MDBottomNavigationItem:
+                name: "Reservation"
+                text: 'New'
+                icon: "timeline-plus-outline"
+
+                BoxLayout:
+                    size: root.width, root.height
+                    padding: 50
+
+                    ScrollView:
+                        size: self.size
+
+                        GridLayout:
+                            cols: 1
+                            size_hint_y: None
+                            row_default_height: '100dp'
+                            row_force_default: True
+                            minimum_height: self.height
+                            height: self.minimum_height
+
+                            GridLayout:
+                                cols: 2
+                                MDLabel:
+                                    id:date_label
+                                    text: "Selected Date: N/A"
+
+                                MDIconButton:
+                                    icon: "pen"
+                                    icon_size: "64sp"
+                                    on_release: root.Show_Date_Picker()
+
+                                MDLabel:
+                                    text: "Selected Timeslot: N/A"
+
+                                MDIconButton:
+                                    icon: "pen"
+                                    icon_size: "64sp"
+
+                            MDLabel:
+                                text: ""
+
+                            MDFillRoundFlatButton:
+                                text: "Confirm"
+                                size_hint: 0.5, 0.3
+
+
+            MDBottomNavigationItem:
+                name: "History"
+                text: 'History'
+                icon: "timetable"
+
+            MDBottomNavigationItem:
+                name: "Logout"
+                text: 'Logout'
+                icon: "logout"
+
+                FloatLayout:
+                    MDFillRoundFlatButton:
+                        text: "Logout"
+                        pos_hint: {"center_x": .5, "center_y": .5}
+                        on_release: root.confirm_logout_popup()
+
+
+
+
+
+<FilePage>
+
+    file_chooser:file_chooser
+    back:back
+
+    BoxLayout:
+        size: root.width, root.height
+        orientation: "vertical"
+
+        padding:20
+        spacing:20
+
+        Button:
+	        id: back
+	        text: "back"
+		    font_size: 35
+		    size_hint: 0.3, 0.1
+		    background_color: 0.4, 0.5, 0.6, 1
+		    on_press: root.back_button()
+
+
+        FileChooserIconView:
+            id: file_chooser
+
+
+
+
+
+<HomePage>
+
+    Label:
+        color: 0.4, 0.5, 0.6, 1
+        text: "hello: "
+
