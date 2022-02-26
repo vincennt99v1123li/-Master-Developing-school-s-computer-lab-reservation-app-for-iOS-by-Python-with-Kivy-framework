@@ -34,18 +34,65 @@ class StartPage (GridLayout):
 class LoginPage(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.ids.username.text = ''
-        self.ids.pw.text = ''
-
 
     def login_button(self):
         username = self.username.text
         pw = self.pw.text
+        input_address = self.address.text
+        input_port = self.port.text
 
+        if username == "" or pw == "":
+            my_dialog = MDDialog(title="Error", text="Username or Password field should not be empty", )
+            my_dialog.open()
+
+        else:
+            try:
+                s = socket.socket()
+
+                port = int(input_port)
+                full_address = str(input_address) + '.tcp.ngrok.io'
+                s.connect((full_address, port))
+
+                option = "login"
+                s.sendall((option).encode('utf-8'))
+
+                feedback = str(s.recv(1024).decode('utf-8'))
+                if feedback == 'OK':
+
+                    #my_dialog = MDDialog(title="success",text=feedback,)
+                    #my_dialog.open()
+
+                    s.sendall((username).encode('utf-8'))
+                    feedback2 = str(s.recv(1024).decode('utf-8'))
+
+                    if feedback2 == 'input_username received':
+                        s.sendall((pw).encode('utf-8'))
+                        feedback3 = str(s.recv(1024).decode('utf-8'))
+
+                        if feedback3 == "True":
+                            self.ids.username.text = ''
+                            self.ids.pw.text = ''
+                            project_5327.screen_manager.current = 'test'
+                        else:
+                            my_dialog = MDDialog(title="Login failed",
+                                                 text="Username or Password not found/ incorrect",
+                                                 )
+                            my_dialog.open()
+
+                s.close()
+
+            except:
+                my_dialog = MDDialog(title="Cannot connect server",
+                                    text="Please check your input and Internet connection",
+                                    )
+                my_dialog.open()
+                pass
+        '''
         if username == "test" and pw == "test":
             self.ids.username.text = ''
             self.ids.pw.text = ''
             project_5327.screen_manager.current = 'test'
+        '''
         pass
 
 class TestPage(FloatLayout):
@@ -67,6 +114,8 @@ class TestPage(FloatLayout):
         full_address = str(input_address) + '.tcp.ngrok.io'
         s.connect((full_address, port))
 
+        option="test"
+        s.sendall((option).encode('utf-8'))
 
         feedback = str(s.recv(1024).decode())
         print(s.recv(1024).decode())

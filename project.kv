@@ -28,6 +28,9 @@
     username:username
     pw:pw
     login:login
+    address:address
+    port:port
+
     BoxLayout:
         size: root.width, root.height
         padding: 50
@@ -56,21 +59,19 @@
 
 		    MDTextField:
                 hint_text: "First Character of Address:"
-                helper_text: ""
+                helper_text: "This field is required"
                 helper_text_mode: "on_focus"
                 id: address
 		        multiline:False
-		        password: True
 			    text:""
 			    pos_hint: {'x': 0, 'y': 0.5}
 
 		    MDTextField:
                 hint_text: "Port Number:"
-                helper_text: ""
+                helper_text: "This field is required"
                 helper_text_mode: "on_focus"
                 id: port
 		        multiline:False
-		        password: True
 			    text:""
 			    pos_hint: {'x': 0, 'y': 0.4}
 
