@@ -14,12 +14,13 @@ from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivymd.uix.picker import MDDatePicker
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDRaisedButton, MDFlatButton
-from kivymd.uix.list import OneLineAvatarIconListItem
+from kivymd.uix.button import MDRaisedButton, MDFlatButton, MDFillRoundFlatButton
+from kivymd.uix.list import OneLineAvatarIconListItem, OneLineIconListItem
 
 #Window.size = (1000, 1000)
 import socket
 kivy.require("2.0.0")
+
 
 class StartPage (GridLayout):
     def __init__(self, **kwargs):
@@ -46,18 +47,6 @@ class LoginPage(GridLayout):
             self.ids.pw.text = ''
             project_5327.screen_manager.current = 'test'
         pass
-
-#need to be modify
-class ItemConfirm(OneLineAvatarIconListItem):
-    divider = None
-
-    def set_icon(self, instance_check):
-        instance_check.active = True
-        check_list = instance_check.get_widgets(instance_check.group)
-        for check in check_list:
-            if check != instance_check:
-                check.active = False
-
 
 class TestPage(FloatLayout):
     def __init__(self, **kwargs):
@@ -92,48 +81,34 @@ class TestPage(FloatLayout):
         project_5327.screen_manager.current = 'file'
         pass
 
-    def on_save(self, instance, value, date_range):
-        print(instance, value, date_range)
+    def date_on_save(self, instance, value, date_range):
+        #print(instance, value, date_range)
         self.ids.date_label.text = str(value)
 
     def Show_Date_Picker(self):
         date_dialog = MDDatePicker()
-        date_dialog.bind(on_save=self.on_save)
+        date_dialog.bind(on_save=self.date_on_save)
         date_dialog.open()
 
-    # need to be modify
+    def timeslot_on_save(self, instance):
+
+        self.ids.time_label.text = str(instance)
+
     def time_slot_picker(self):
-        btn1 = MDFlatButton(text="Yes",text_color=[0, 0, 1, 0])
-        #btn1.bind(on_press=self.logout_button)
+        btn1 = MDFlatButton(text="Confirm",text_color=[0, 0, 1, 0])
+        btn1.bind(on_press=self.timeslot_on_save)
         my_dialog = MDDialog(
-                title="Phone ringtone",
+                title="Timeslot",
                 type="confirmation",
                 items=[
-                    ItemConfirm(text="Callisto"),
-                    ItemConfirm(text="Luna"),
-                    ItemConfirm(text="Night"),
-                    ItemConfirm(text="Solo"),
-                    ItemConfirm(text="Phobos"),
-                    ItemConfirm(text="Diamond"),
-                    ItemConfirm(text="Sirena"),
-                    ItemConfirm(text="Red music"),
-                    ItemConfirm(text="Allergio"),
-                    ItemConfirm(text="Magic"),
-                    ItemConfirm(text="Tic-tac"),
-                ],
-                buttons=[
-                    MDFlatButton(
-                        text="CANCEL"
-
-
-                    ),
-                    MDFlatButton(
-                        text="OK"
-
-
-                    ),
-                ],
-            )
+                    OneLineIconListItem(text="8am-10am",on_press=lambda x:self.timeslot_on_save('8am-10am')),
+                    OneLineIconListItem(text="10am-12pm", on_press=lambda x: self.timeslot_on_save('10am-12pm')),
+                    OneLineIconListItem(text="12pm-2pm", on_press=lambda x: self.timeslot_on_save('12pm-2pm')),
+                    OneLineIconListItem(text="2pm-4pm", on_press=lambda x: self.timeslot_on_save('2pm-4pm')),
+                    OneLineIconListItem(text="4pm-6pm", on_press=lambda x: self.timeslot_on_save('4pm-6pm')),
+                    OneLineIconListItem(text="6pm-8pm", on_press=lambda x: self.timeslot_on_save('6pm-8pm')),
+                    ],
+                )
         my_dialog.open()
         pass
 

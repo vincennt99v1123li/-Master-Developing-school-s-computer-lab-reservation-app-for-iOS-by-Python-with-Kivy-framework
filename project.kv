@@ -21,12 +21,6 @@
 
             size_hint: 0.5, 0.3
 
-
-
-
-
-
-
 <LoginPage>
 
     username:username
@@ -73,6 +67,7 @@
     send:send
     select_file:select_file
     date_label:date_label
+    time_label:time_label
 
     MDBoxLayout:
         orientation: 'vertical'
@@ -91,15 +86,12 @@
 
                     GridLayout:
 
-
                         cols: 1
                         size_hint_y: None
                         row_default_height: '100dp'
                         row_force_default: True
                         minimum_height: self.height
                         height: self.minimum_height
-
-
 
                         Label:
                             color: 0.4, 0.5, 0.6, 1
@@ -177,6 +169,7 @@
                                     on_release: root.Show_Date_Picker()
 
                                 MDLabel:
+                                    id: time_label
                                     text: "Selected Timeslot: N/A"
 
                                 MDIconButton:
@@ -201,12 +194,16 @@
                 name: "Logout"
                 text: 'Logout'
                 icon: "logout"
+                BoxLayout:
+                    size: root.width, root.height
+                    padding: 50
 
-                FloatLayout:
-                    MDFillRoundFlatButton:
-                        text: "Logout"
-                        pos_hint: {"center_x": .5, "center_y": .5}
-                        on_release: root.confirm_logout_popup()
+                    FloatLayout:
+                        MDFillRoundFlatButton:
+                            text: "Logout"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            size_hint: 1, 0.3
+                            on_release: root.confirm_logout_popup()
 
 
 
