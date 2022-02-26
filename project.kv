@@ -66,8 +66,28 @@
     input_port:input_port
     send:send
     select_file:select_file
+
     date_label:date_label
     time_label:time_label
+
+    history_1:history_1
+    history_2:history_2
+    history_3:history_3
+    history_4:history_4
+    history_5:history_5
+    history_6:history_6
+    history_7:history_7
+    history_8:history_8
+    history_9:history_9
+    history_10:history_10
+    history_11:history_11
+    history_12:history_12
+    history_13:history_13
+    history_14:history_14
+    history_15:history_15
+
+
+
 
     MDBoxLayout:
         orientation: 'vertical'
@@ -190,6 +210,92 @@
                 text: 'History'
                 icon: "timetable"
 
+                BoxLayout:
+                    size: root.width, root.height
+                    padding: 50
+
+                    ScrollView:
+                        size: self.size
+                        MDList:
+                            TwoLineListItem:
+                                id:history_1
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_2
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_3
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_4
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_5
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_6
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_7
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_8
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_9
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_10
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_11
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_12
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_13
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_14
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+                            TwoLineListItem:
+                                id:history_15
+                                text:"2022-02-09"
+                                secondary_text: "12pm-2pm"
+
+
+
+
+
             MDBottomNavigationItem:
                 name: "Logout"
                 text: 'Logout'
@@ -198,12 +304,36 @@
                     size: root.width, root.height
                     padding: 50
 
-                    FloatLayout:
-                        MDFillRoundFlatButton:
-                            text: "Logout"
-                            pos_hint: {"center_x": .5, "center_y": .5}
-                            size_hint: 1, 0.3
-                            on_release: root.confirm_logout_popup()
+                    ScrollView:
+                        size: self.size
+
+                        GridLayout:
+                            cols: 1
+                            size_hint_y: None
+                            row_default_height: '100dp'
+                            row_force_default: True
+                            minimum_height: self.height
+                            height: self.minimum_height
+
+                            GridLayout:
+                                cols: 2
+                                MDIcon:
+                                    icon: "account"
+                                    icon_size: "64sp"
+
+
+                                MDLabel:
+                                    text:"test"
+
+
+
+                            MDLabel:
+                                text: ""
+
+                            MDFillRoundFlatButton:
+                                text: "Logout"
+                                size_hint: 0.5, 0.3
+                                on_release: root.confirm_logout_popup()
 
 
 
