@@ -2,24 +2,26 @@
 
     start:start
 
-    GridLayout:
-
-        cols: 1
+    BoxLayout:
         size: root.width, root.height
+        padding: 50
+        GridLayout:
 
-        MDLabel:
+            cols: 1
+            size: root.width, root.height
 
-            text: "Project 5327 App"
-            halign: "center"
+            MDLabel:
 
-        MDRaisedButton:
-            id: start
-            text: "Start"
+                text: "Project 5327 App"
+                halign: "center"
 
-            on_press: root.start_button()
-            size: 50, 100
+            MDFillRoundFlatButton:
+                id: start
+                text: "Start"
+                on_press: root.start_button()
+                size: 50, 100
+                size_hint: 0.5, 0.3
 
-            size_hint: 0.5, 0.3
 
 <LoginPage>
 
@@ -40,7 +42,7 @@
                 id: username
 			    multiline:False
 			    text:""
-			    pos_hint: {'x': 0, 'y': 0.6}
+			    pos_hint: {'x': 0, 'y': 0.7}
 
             MDTextField:
                 hint_text: "Password:"
@@ -50,12 +52,32 @@
 		        multiline:False
 		        password: True
 			    text:""
+			    pos_hint: {'x': 0, 'y': 0.6}
+
+		    MDTextField:
+                hint_text: "First Character of Address:"
+                helper_text: ""
+                helper_text_mode: "on_focus"
+                id: address
+		        multiline:False
+		        password: True
+			    text:""
 			    pos_hint: {'x': 0, 'y': 0.5}
+
+		    MDTextField:
+                hint_text: "Port Number:"
+                helper_text: ""
+                helper_text_mode: "on_focus"
+                id: port
+		        multiline:False
+		        password: True
+			    text:""
+			    pos_hint: {'x': 0, 'y': 0.4}
 
 		    MDFillRoundFlatButton:
 		        id: login
 			    text: "Log In"
-                pos_hint: {'x': 0, 'y': 0.4}
+                pos_hint: {'x': 0, 'y': 0.3}
 			    on_press: root.login_button()
 
 
