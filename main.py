@@ -22,6 +22,9 @@ import socket
 kivy.require("2.0.0")
 
 
+
+confirmed_username = ''
+
 class StartPage (GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -35,7 +38,7 @@ class StartPage (GridLayout):
 class LoginPage(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.confirmed_username = "default"
+
 
     def login_button(self):
         username = self.username.text
@@ -73,11 +76,8 @@ class LoginPage(GridLayout):
 
                         if feedback3 == "True":
 
-                            f = open("Confirmed_user.txt", "w")
-                            f.write(str(self.ids.username.text))
-                            f.close()
-
-
+                            global confirmed_username
+                            confirmed_username = str(self.ids.username.text)
 
                             self.ids.username.text = ''
                             self.ids.pw.text = ''
@@ -113,9 +113,9 @@ class TestPage(FloatLayout):
 
 
     def update_username(self):
-        f = open("Confirmed_user.txt", "r")
-        self.ids.username.text = str(f.read())
-        f.close()
+
+        global confirmed_username
+        self.ids.username.text = str(confirmed_username)
 
     def send_button(self):
         input_box = self.input_box.text
@@ -190,9 +190,9 @@ class TestPage(FloatLayout):
         pass
 
     def logout_button(self,instance):
-        f = open("Confirmed_user.txt", "w")
-        f.write('')
-        f.close()
+
+        global confirmed_username
+        confirmed_username = ''
         self.ids.username.text = 'Please refresh this page to view the username'
         project_5327.screen_manager.current = 'start'
         pass
