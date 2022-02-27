@@ -29,11 +29,13 @@ class StartPage (GridLayout):
     def start_button(self):
 
         project_5327.screen_manager.current = 'login'
-        pass
+
+
 
 class LoginPage(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.confirmed_username = "default"
 
     def login_button(self):
         username = self.username.text
@@ -70,16 +72,31 @@ class LoginPage(GridLayout):
                         feedback3 = str(s.recv(1024).decode('utf-8'))
 
                         if feedback3 == "True":
+
+                            f = open("Confirmed_user.txt", "w")
+                            f.write(str(self.ids.username.text))
+                            f.close()
+
+
+
                             self.ids.username.text = ''
                             self.ids.pw.text = ''
+
+                            s.close()
+
                             project_5327.screen_manager.current = 'test'
+
                         else:
                             my_dialog = MDDialog(title="Login failed",
                                                  text="Username or Password not found/ incorrect",
                                                  )
                             my_dialog.open()
+                            s.close()
+                    else:
+                        s.close()
+                else:
+                    s.close()
 
-                s.close()
 
             except:
                 my_dialog = MDDialog(title="Cannot connect server",
@@ -87,17 +104,18 @@ class LoginPage(GridLayout):
                                     )
                 my_dialog.open()
                 pass
-        '''
-        if username == "test" and pw == "test":
-            self.ids.username.text = ''
-            self.ids.pw.text = ''
-            project_5327.screen_manager.current = 'test'
-        '''
+
         pass
 
 class TestPage(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+    def update_username(self):
+        f = open("Confirmed_user.txt", "r")
+        self.ids.username.text = str(f.read())
+        f.close()
 
     def send_button(self):
         input_box = self.input_box.text
@@ -172,6 +190,10 @@ class TestPage(FloatLayout):
         pass
 
     def logout_button(self,instance):
+        f = open("Confirmed_user.txt", "w")
+        f.write('')
+        f.close()
+        self.ids.username.text = 'Please refresh this page to view the username'
         project_5327.screen_manager.current = 'start'
         pass
 
@@ -226,6 +248,8 @@ class HomePage(GridLayout):
         if username == "test" and pw == "test":
             print("hi")
         pass
+
+
 
 class ProjectApp(MDApp):
     def build(self):
