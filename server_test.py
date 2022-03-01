@@ -1,12 +1,6 @@
 import socket
 import pymysql
 
-connection = pymysql.connect(user='root',
-                             password='',
-                             db='comp5327test',
-                             cursorclass=pymysql.cursors.DictCursor)
-
-
 class booking_system_serverside():
     def __init__(self):
         s = socket.socket()
@@ -56,23 +50,43 @@ class booking_system_serverside():
 
                 c.close()
 
+            elif option == "timeslot_display":
+                reply = 'OK'
+                c.send(reply.encode('utf-8'))
+
+                input_date = (c.recv(1024).decode("utf-8"))
+
+                timeslot_reply=''
+                reply2 = str(self.timeslot_check(input_date,timeslot_reply))
+
+                c.close()
+
             else:
                 c.close()
 
     def database_test(self,test_value):
         try:
+            connection = pymysql.connect(user='root',
+                                         password='',
+                                         db='comp5327test',
+                                         cursorclass=pymysql.cursors.DictCursor)
             with connection.cursor() as cursor:
                 found = False
                 cursor.execute('''SELECT * FROM User WHERE 1 ''')
                 for e in cursor.fetchall():
                     test_value.append(e)
                     #print(e)
+                connection.close
                 return test_value
         except NameError as error:
             pass
 
     def login_check(self,input_username,input_pw,login_reply):
         try:
+            connection = pymysql.connect(user='root',
+                                         password='',
+                                         db='comp5327test',
+                                         cursorclass=pymysql.cursors.DictCursor)
             with connection.cursor() as cursor:
                 #print(login_reply)
                 sql = '''SELECT Password FROM User WHERE Username = "'''+str(input_username)+'''"'''
@@ -93,7 +107,31 @@ class booking_system_serverside():
                 else:
                     login_reply = "False"
                 #print(login_reply)
+                connection.close()
                 return login_reply
+        except NameError as error:
+            pass
+
+    def timeslot_check(self,input_date,timeslot_reply):
+        try:
+            connection = pymysql.connect(user='root',
+                                         password='',
+                                         db='comp5327test',
+                                         cursorclass=pymysql.cursors.DictCursor)
+            with connection.cursor() as cursor:
+                sql = '''SELECT Slot_id, time_slot, vacancy FROM Timeslot WHERE date = "''' + str(input_date) + '''" and vacancy > 0'''
+                cursor.execute(sql)
+
+                str_e = ''
+
+                for e in cursor.fetchall():
+                    print(e)
+                    str_e += str(e)
+
+                print(str_e)
+                connection.close()
+                return timeslot_reply
+            pass
         except NameError as error:
             pass
 

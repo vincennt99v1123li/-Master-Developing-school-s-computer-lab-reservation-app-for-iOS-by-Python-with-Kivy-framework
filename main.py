@@ -21,9 +21,9 @@ from kivymd.uix.list import OneLineAvatarIconListItem, OneLineIconListItem,OneLi
 import socket
 kivy.require("2.0.0")
 
-
-
 confirmed_username = ''
+confirmed_address = ''
+confirmed_port = ''
 
 class StartPage (GridLayout):
     def __init__(self, **kwargs):
@@ -83,6 +83,12 @@ class LoginPage(GridLayout):
                             self.ids.pw.text = ''
 
                             s.close()
+
+                            global confirmed_address
+                            global confirmed_port
+
+                            confirmed_address = input_address
+                            confirmed_port = input_port
 
                             project_5327.screen_manager.current = 'test'
 
@@ -162,22 +168,58 @@ class TestPage(FloatLayout):
         self.ids.time_label.text = str(instance)
 
     def time_slot_picker(self):
-        btn1 = MDFlatButton(text="Confirm",text_color=[0, 0, 1, 0])
-        btn1.bind(on_press=self.timeslot_on_save)
-        my_dialog = MDDialog(
-                title="Timeslot",
-                type="confirmation",
-                items=[
-                    OneLineIconListItem(text="8am-10am",on_press=lambda x:self.timeslot_on_save('8am-10am')),
-                    OneLineIconListItem(text="10am-12pm", on_press=lambda x: self.timeslot_on_save('10am-12pm')),
-                    OneLineIconListItem(text="12pm-2pm", on_press=lambda x: self.timeslot_on_save('12pm-2pm')),
-                    OneLineIconListItem(text="2pm-4pm", on_press=lambda x: self.timeslot_on_save('2pm-4pm')),
-                    OneLineIconListItem(text="4pm-6pm", on_press=lambda x: self.timeslot_on_save('4pm-6pm')),
-                    OneLineIconListItem(text="6pm-8pm", on_press=lambda x: self.timeslot_on_save('6pm-8pm')),
-                    ],
-                )
-        my_dialog.open()
-        pass
+
+        if self.ids.date_label.text != "Selected Date: N/A":
+            try:
+                s = socket.socket()
+
+                global confirmed_port
+                global confirmed_address
+
+                port = int(confirmed_port)
+                full_address = str(confirmed_address) + '.tcp.ngrok.io'
+                s.connect((full_address, port))
+
+                option = "timeslot_display"
+                s.sendall((option).encode('utf-8'))
+
+                feedback = str(s.recv(1024).decode('utf-8'))
+                if feedback == "OK":
+                    date_option = str(self.ids.date_label.text)
+                    s.sendall((date_option).encode('utf-8'))
+                    pass
+
+                else:
+                    s.close()
+
+                btn1 = MDFlatButton(text="Confirm",text_color=[0, 0, 1, 0])
+                btn1.bind(on_press=self.timeslot_on_save)
+                my_dialog = MDDialog(
+                        title="Timeslot",
+                        type="confirmation",
+                        items=[
+                            OneLineIconListItem(text="8am-10am",on_press=lambda x:self.timeslot_on_save('8am-10am')),
+                            OneLineIconListItem(text="10am-12pm", on_press=lambda x: self.timeslot_on_save('10am-12pm')),
+                            OneLineIconListItem(text="12pm-2pm", on_press=lambda x: self.timeslot_on_save('12pm-2pm')),
+                            OneLineIconListItem(text="2pm-4pm", on_press=lambda x: self.timeslot_on_save('2pm-4pm')),
+                            OneLineIconListItem(text="4pm-6pm", on_press=lambda x: self.timeslot_on_save('4pm-6pm')),
+                            OneLineIconListItem(text="6pm-8pm", on_press=lambda x: self.timeslot_on_save('6pm-8pm')),
+                            ],
+                        )
+                my_dialog.open()
+            except:
+                my_dialog = MDDialog(title="Cannot connect server",
+                                     text="Please check your input and Internet connection",
+                                     )
+                my_dialog.open()
+                pass
+
+        else:
+            my_dialog = MDDialog(title="Date not found",
+                                 text="Please select date to continue")
+            my_dialog.open()
+            pass
+
 
 
     def confirm_logout_popup(self):
@@ -194,6 +236,9 @@ class TestPage(FloatLayout):
         global confirmed_username
         confirmed_username = ''
         self.ids.username.text = 'Please refresh this page to view the username'
+        self.ids.date_label.text = 'Selected Date: N/A'
+        self.ids.time_label.text = 'Selected Timeslot: N/A'
+
         project_5327.screen_manager.current = 'start'
         pass
 
