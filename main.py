@@ -157,16 +157,18 @@ class TestPage(FloatLayout):
     def date_on_save(self, instance, value, date_range):
         #print(instance, value, date_range)
         self.ids.date_label.text = str(value)
+        self.ids.time_label.text = 'Selected Timeslot: N/A'
+        self.ids.slot_id_label.text = ''
 
     def Show_Date_Picker(self):
         date_dialog = MDDatePicker()
         date_dialog.bind(on_save=self.date_on_save)
         date_dialog.open()
 
-    def timeslot_on_save(self, instance):
+    def timeslot_on_save(self, instance, instance2):
 
         self.ids.time_label.text = str(instance)
-
+        self.ids.slot_id_label.text = str("ID: "+instance2)
     def time_slot_picker(self):
 
         if self.ids.date_label.text != "Selected Date: N/A":
@@ -187,26 +189,64 @@ class TestPage(FloatLayout):
                 if feedback == "OK":
                     date_option = str(self.ids.date_label.text)
                     s.sendall((date_option).encode('utf-8'))
-                    pass
+                    feedback_timeslot = str(s.recv(1024).decode('utf-8'))
+                    s.close()
+
+                    print(feedback_timeslot)
+
+                    i=0
+                    var_order = 1
+                    location_a = 0
+                    location_b = 0
+
+                    slot_id_list = []
+                    time_slot_list = []
+
+                    while i < len(feedback_timeslot):
+
+                        if feedback_timeslot[i] == ':' and var_order == 1:
+                            location_a = i
+                        elif feedback_timeslot[i] == ',' and var_order == 1:
+                            location_b = i
+                            var_order = 2
+                            slot_id_list.append(feedback_timeslot[location_a+3:location_b-1])
+
+                        elif feedback_timeslot[i] == ':' and var_order == 2:
+                            location_a = i
+                        elif feedback_timeslot[i] == '}' and var_order == 2:
+                            location_b = i
+                            var_order = 1
+                            time_slot_list.append(feedback_timeslot[location_a + 3:location_b - 1])
+                        i+=1
+
+                    if slot_id_list == [] or time_slot_list == []:
+                        my_dialog = MDDialog(title="Full booking",
+                                             text="Please choose another date",
+                                             )
+                        my_dialog.open()
+                    else:
+
+                        i = 0
+                        option_list = []
+
+                        while i < len(time_slot_list):
+                            option_str_timeslot = str(time_slot_list[i])
+                            option_str_id = str(slot_id_list[i])
+                            f = lambda x, option_str_timeslot=option_str_timeslot, option_str_id=option_str_id: self.timeslot_on_save(option_str_timeslot,option_str_id)
+                            option_list.append(OneLineIconListItem(text= option_str_timeslot, on_release=f))
+                            i+=1
+
+
+                        my_dialog = MDDialog(
+                            title="Timeslot",
+                            type="confirmation",
+                            items=option_list,
+                        )
+                        my_dialog.open()
 
                 else:
                     s.close()
 
-                btn1 = MDFlatButton(text="Confirm",text_color=[0, 0, 1, 0])
-                btn1.bind(on_press=self.timeslot_on_save)
-                my_dialog = MDDialog(
-                        title="Timeslot",
-                        type="confirmation",
-                        items=[
-                            OneLineIconListItem(text="8am-10am",on_press=lambda x:self.timeslot_on_save('8am-10am')),
-                            OneLineIconListItem(text="10am-12pm", on_press=lambda x: self.timeslot_on_save('10am-12pm')),
-                            OneLineIconListItem(text="12pm-2pm", on_press=lambda x: self.timeslot_on_save('12pm-2pm')),
-                            OneLineIconListItem(text="2pm-4pm", on_press=lambda x: self.timeslot_on_save('2pm-4pm')),
-                            OneLineIconListItem(text="4pm-6pm", on_press=lambda x: self.timeslot_on_save('4pm-6pm')),
-                            OneLineIconListItem(text="6pm-8pm", on_press=lambda x: self.timeslot_on_save('6pm-8pm')),
-                            ],
-                        )
-                my_dialog.open()
             except:
                 my_dialog = MDDialog(title="Cannot connect server",
                                      text="Please check your input and Internet connection",
@@ -238,6 +278,7 @@ class TestPage(FloatLayout):
         self.ids.username.text = 'Please refresh this page to view the username'
         self.ids.date_label.text = 'Selected Date: N/A'
         self.ids.time_label.text = 'Selected Timeslot: N/A'
+        self.ids.slot_id_label.text = ''
 
         project_5327.screen_manager.current = 'start'
         pass

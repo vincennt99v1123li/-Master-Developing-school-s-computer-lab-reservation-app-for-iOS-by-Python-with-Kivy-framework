@@ -93,6 +93,7 @@
     reservation_page:reservation_page
     date_label:date_label
     time_label:time_label
+    slot_id_label:slot_id_label
 
     history_1:history_1
     history_2:history_2
@@ -220,6 +221,10 @@
                                     icon: "pen"
                                     icon_size: "64sp"
                                     on_release: root.time_slot_picker()
+
+                                MDLabel:
+                                    id: slot_id_label
+                                    text: ""
 
                             MDLabel:
                                 text: ""

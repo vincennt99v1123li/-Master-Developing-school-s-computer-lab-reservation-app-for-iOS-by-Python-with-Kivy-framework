@@ -58,6 +58,7 @@ class booking_system_serverside():
 
                 timeslot_reply=''
                 reply2 = str(self.timeslot_check(input_date,timeslot_reply))
+                c.send(reply2.encode('utf-8'))
 
                 c.close()
 
@@ -112,24 +113,25 @@ class booking_system_serverside():
         except NameError as error:
             pass
 
-    def timeslot_check(self,input_date,timeslot_reply):
+    def timeslot_check(self,input_date,timeslot_reply,):
         try:
             connection = pymysql.connect(user='root',
                                          password='',
                                          db='comp5327test',
                                          cursorclass=pymysql.cursors.DictCursor)
             with connection.cursor() as cursor:
-                sql = '''SELECT Slot_id, time_slot, vacancy FROM Timeslot WHERE date = "''' + str(input_date) + '''" and vacancy > 0'''
+                sql = '''SELECT Slot_id, time_slot FROM Timeslot WHERE date = "''' + str(input_date) + '''" and vacancy > 0'''
                 cursor.execute(sql)
 
                 str_e = ''
 
                 for e in cursor.fetchall():
-                    print(e)
+                    #print(e)
                     str_e += str(e)
 
                 print(str_e)
                 connection.close()
+                timeslot_reply = str_e
                 return timeslot_reply
             pass
         except NameError as error:
