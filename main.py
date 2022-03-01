@@ -221,7 +221,7 @@ class TestPage(FloatLayout):
 
                     if slot_id_list == [] or time_slot_list == []:
                         my_dialog = MDDialog(title="Full booking",
-                                             text="Please choose another date",
+                                             text="Please select another date",
                                              )
                         my_dialog.open()
                     else:
@@ -259,6 +259,74 @@ class TestPage(FloatLayout):
                                  text="Please select date to continue")
             my_dialog.open()
             pass
+
+
+    def confirm_booking(self):
+        if self.ids.slot_id_label.text == '':
+            my_dialog = MDDialog(title="Error",
+                                 text="Please select date and timeslot to continue",
+                                 )
+            my_dialog.open()
+            pass
+        else:
+
+            try:
+                s = socket.socket()
+
+                global confirmed_port
+                global confirmed_address
+
+                port = int(confirmed_port)
+                full_address = str(confirmed_address) + '.tcp.ngrok.io'
+                s.connect((full_address, port))
+
+                option = "confirm_booking"
+                s.sendall((option).encode('utf-8'))
+
+                feedback = str(s.recv(1024).decode('utf-8'))
+                if feedback == "OK":
+                    selected_id = str(self.ids.slot_id_label.text)[4:]
+                    s.sendall((selected_id).encode('utf-8'))
+
+                    feedback2 = str(s.recv(1024).decode('utf-8'))
+                    if feedback2 == 'id received':
+                        global confirmed_username
+                        s.sendall((confirmed_username).encode('utf-8'))
+
+                        feedback3 = str(s.recv(1024).decode('utf-8'))
+                        s.close()
+
+                        if feedback3 == "full":
+                            my_dialog = MDDialog(title="Full booking",
+                                                text="Please select another date or timeslot",
+                                                )
+                            my_dialog.open()
+
+                        elif feedback3 == "already":
+                            my_dialog = MDDialog(title='Error',
+                                                 text="You have already reserved this timeslot",
+                                                 )
+                            my_dialog.open()
+
+                        elif feedback3 == "done":
+                            my_dialog = MDDialog(title="Success",
+                                                 text="You can check the reservation record in History page",
+                                                 )
+                            my_dialog.open()
+                        self.ids.date_label.text = 'Selected Date: N/A'
+                        self.ids.time_label.text = 'Selected Timeslot: N/A'
+                        self.ids.slot_id_label.text = ''
+                    else:
+                        s.close()
+                else:
+                    s.close()
+
+            except:
+                my_dialog = MDDialog(title="Cannot connect server",
+                                    text="Please check your input and Internet connection",
+                                    )
+                my_dialog.open()
+                pass
 
 
 
