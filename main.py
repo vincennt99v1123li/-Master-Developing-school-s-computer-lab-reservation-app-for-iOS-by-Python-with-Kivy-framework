@@ -209,7 +209,7 @@ class TestPage(FloatLayout):
                         elif feedback_timeslot[i] == ',' and var_order == 1:
                             location_b = i
                             var_order = 2
-                            slot_id_list.append(feedback_timeslot[location_a+3:location_b-1])
+                            slot_id_list.append(feedback_timeslot[location_a+2:location_b])
 
                         elif feedback_timeslot[i] == ':' and var_order == 2:
                             location_a = i
