@@ -84,6 +84,17 @@ class booking_system_serverside():
 
                 c.close()
 
+            elif option == "booking_history":
+                reply = 'OK'
+                c.send(reply.encode('utf-8'))
+
+                confirmed_username = (c.recv(1024).decode("utf-8"))
+                print(confirmed_username)
+
+                history_reply = ''
+                history_reply = str(self.booking_check(confirmed_username, history_reply))
+                c.send(history_reply.encode('utf-8'))
+                c.close()
             else:
                 c.close()
 
@@ -227,6 +238,28 @@ class booking_system_serverside():
                     booking_reply = "full"
                 return booking_reply
             pass
+        except NameError as error:
+            pass
+
+    def booking_check(self, confirmed_username,history_reply):
+        try:
+            connection = pymysql.connect(user='root',
+                                         password='',
+                                         db='comp5327test',
+                                         cursorclass=pymysql.cursors.DictCursor)
+            with connection.cursor() as cursor:
+                sql = '''SELECT Booking.booking_id, Booking.Slot_id, Booking.apply_date_time, Timeslot.date, Timeslot.time_slot FROM Booking Inner Join Timeslot on Booking.Slot_id=Timeslot.Slot_id WHERE Username = "''' + str(confirmed_username) + '''" order by Booking.booking_id DESC'''
+                cursor.execute(sql)
+
+                str_e = ''
+
+                for e in cursor.fetchall():
+                    # print(e)
+                    str_e += str(e)
+
+                print(str_e)
+                history_reply= str_e
+                return history_reply
         except NameError as error:
             pass
 
