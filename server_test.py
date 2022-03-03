@@ -212,7 +212,7 @@ class booking_system_serverside():
                         for e in cursor.fetchall():
                             # print(e)
                             str_e2 += str(e)
-                        #print(str_e2)
+                        print(str_e2)
                         connection2.close()
                         if str_e2 == '':
 
@@ -225,13 +225,23 @@ class booking_system_serverside():
                                                           db='comp5327test',
                                                           cursorclass=pymysql.cursors.DictCursor)
                             with connection3.cursor() as cursor:
-                                sql3 = '''INSERT INTO `Booking` (`booking_id`, `Slot_id`, `Username`, `apply_date_time`) VALUES (NULL, "''' + str(
-                                    selected_id) + '''" , "''' + str(confirmed_username) + '''" , "''' + str(current_date_time) + '''")'''
+                                sql3 = '''INSERT INTO `Booking` (`booking_id`, `Slot_id`, `Username`, `apply_date_time`) VALUES (NULL, "''' + str(selected_id) + '''" , "''' + str(confirmed_username) + '''" , "''' + str(current_date_time) + '''")'''
                                 cursor.execute(sql3)
                                 connection3.commit()
                                 connection3.close()
 
-                                booking_reply = "done"
+                            connection4 = pymysql.connect(user='root',
+                                                          password='',
+                                                          db='comp5327test',
+                                                          cursorclass=pymysql.cursors.DictCursor)
+                            new_vacancy = int(str_e[location_a + 2:len(str_e) - 1]) - 1
+                            with connection4.cursor() as cursor:
+                                sql4 = '''UPDATE TImeslot SET vacancy = ''' + str(new_vacancy) + ''' where slot_id =  "''' + str(selected_id) + '''"'''
+                                cursor.execute(sql4)
+                                connection4.commit()
+                                connection4.close()
+
+                            booking_reply = "done"
                         else:
                             booking_reply = "already"
                 else:

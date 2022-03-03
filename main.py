@@ -16,6 +16,7 @@ from kivymd.uix.picker import MDDatePicker
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton, MDFlatButton, MDFillRoundFlatButton
 from kivymd.uix.list import OneLineAvatarIconListItem, OneLineIconListItem,OneLineListItem, TwoLineListItem
+from datetime import datetime
 
 #Window.size = (1000, 1000)
 import socket
@@ -328,13 +329,49 @@ class TestPage(FloatLayout):
                 my_dialog.open()
                 pass
 
+    def cancel_booking(self,option_booking,option_slot_id,option_apply_date,option_date,option_time):
+        now = datetime.now()
+        current_date = str(now.strftime("%Y-%m-%d"))
+
+        print("print")
+        if int(current_date[:4]) <= int(option_date[:4]):
+
+            if int(current_date[4:7]) <= int(option_date[4:7]):
+
+
+                if int(current_date[8:10]) <= int(option_date[8:10]):
+                    my_dialog = MDDialog(title="yrd",
+                                         text='')
+                    my_dialog.open()
+                else:
+                    my_dialog = MDDialog(title="Error",
+                                         text='Cancel booking period expired')
+                    my_dialog.open()
+            else:
+                my_dialog = MDDialog(title="Error",
+                                     text='Cancel booking period expired')
+                my_dialog.open()
+        else:
+            my_dialog = MDDialog(title="Error",
+                                 text='Cancel booking period expired')
+            my_dialog.open()
+
+        '''
+        print(current_date[:4])
+        print(option_date[:4])
+
+        print(option_date[5:7])
+        print(option_date[8:10])
+        '''
+        pass
     def booking_history_popup(self,option_booking,option_slot_id,option_apply_date,option_date,option_time):
         btn1 = MDFlatButton(text="Cancel Booking", text_color=[0, 0, 1, 0])
-        #btn1.bind(on_press=self.logout_button)
+        btn1.bind(on_press=lambda x: self.cancel_booking(option_booking,option_slot_id,option_apply_date,option_date,option_time))
         my_dialog = MDDialog(title="Reservation Details",
                              text="Booking ID: "+option_booking+"\nSlot ID: "+option_slot_id+"\nDate: "+option_date+"\nTime: "+option_time+"\nApply time: "+option_apply_date,
                              buttons=[btn1])
         my_dialog.open()
+
     def booking_history(self):
         try:
             s = socket.socket()
@@ -426,14 +463,6 @@ class TestPage(FloatLayout):
                         done = False
 
                     i += 1
-
-
-                print('print')
-                print(booking_id_list)
-                print(slot_id_list)
-                print(apply_date_list)
-                print(date_list)
-                print(time_slot_list)
 
                 x=0
                 self.ids.history.clear_widgets()
