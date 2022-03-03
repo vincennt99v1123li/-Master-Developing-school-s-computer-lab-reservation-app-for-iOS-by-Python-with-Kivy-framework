@@ -95,6 +95,17 @@ class booking_system_serverside():
                 history_reply = str(self.booking_check(confirmed_username, history_reply))
                 c.send(history_reply.encode('utf-8'))
                 c.close()
+            elif option == "cancel_booking":
+                reply = 'OK'
+                c.send(reply.encode('utf-8'))
+
+                confirmed_booking_id = (c.recv(1024).decode("utf-8"))
+                print(confirmed_booking_id)
+
+                cancel_reply = ''
+                cancel_reply = str(self.cancel_booking(confirmed_booking_id, cancel_reply))
+                c.send(cancel_reply.encode('utf-8'))
+                c.close()
             else:
                 c.close()
 
@@ -266,10 +277,64 @@ class booking_system_serverside():
                 for e in cursor.fetchall():
                     # print(e)
                     str_e += str(e)
-
+                connection.close()
                 print(str_e)
                 history_reply= str_e
                 return history_reply
+        except NameError as error:
+            pass
+
+    def cancel_booking(self, confirmed_booking_id, cancel_reply):
+        try:
+            connection = pymysql.connect(user='root',
+                                         password='',
+                                         db='comp5327test',
+                                         cursorclass=pymysql.cursors.DictCursor)
+            with connection.cursor() as cursor:
+                sql = '''SELECT Slot_id FROM Booking WHERE booking_id = "''' + str(confirmed_booking_id) + '''"'''
+                cursor.execute(sql)
+
+                str_e = ''
+
+                for e in cursor.fetchall():
+                    # print(e)
+                    str_e += str(e)
+
+                #print(str_e[12:len(str_e)-1])
+                connection.close()
+
+            connection2 = pymysql.connect(user='root',password='',db='comp5327test',cursorclass=pymysql.cursors.DictCursor)
+            with connection2.cursor() as cursor:
+                sql2 = '''DELETE FROM Booking WHERE booking_id = "''' + str(confirmed_booking_id) + '''"'''
+                cursor.execute(sql2)
+                connection2.commit()
+                connection2.close()
+
+            connection3 = pymysql.connect(user='root', password='', db='comp5327test',
+                                          cursorclass=pymysql.cursors.DictCursor)
+            with connection3.cursor() as cursor:
+                sql3 = '''SELECT vacancy FROM Timeslot WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
+                cursor.execute(sql3)
+
+                str_e2 = ''
+
+                for e in cursor.fetchall():
+                    # print(e)
+                    str_e2 += str(e)
+
+                print(str_e2[12:len(str_e)-1])
+                connection3.close()
+
+            connection4 = pymysql.connect(user='root', password='', db='comp5327test',
+                                          cursorclass=pymysql.cursors.DictCursor)
+            with connection4.cursor() as cursor:
+                sql4 = '''UPDATE Timeslot SET vacancy = ''' + str(int(str_e2[12:len(str_e)-1])+1) + ''' WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
+                cursor.execute(sql4)
+                connection4.commit()
+                connection4.close()
+
+                cancel_reply = 'Done'
+            return cancel_reply
         except NameError as error:
             pass
 

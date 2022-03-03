@@ -340,9 +340,44 @@ class TestPage(FloatLayout):
 
 
                 if int(current_date[8:10]) <= int(option_date[8:10]):
-                    my_dialog = MDDialog(title="yrd",
-                                         text='')
-                    my_dialog.open()
+                    try:
+                        s = socket.socket()
+
+                        global confirmed_port
+                        global confirmed_address
+
+                        port = int(confirmed_port)
+                        full_address = str(confirmed_address) + '.tcp.ngrok.io'
+                        s.connect((full_address, port))
+
+                        option = "cancel_booking"
+                        s.sendall((option).encode('utf-8'))
+
+                        feedback = str(s.recv(1024).decode('utf-8'))
+                        if feedback == "OK":
+                            s.sendall((option_booking).encode('utf-8'))
+                            cancel_feedback = str(s.recv(1024).decode('utf-8'))
+
+                            if cancel_feedback == 'Done':
+                                my_dialog = MDDialog(title="Booking Canceled",
+                                                     text="Refresh this page to view your booking",
+                                                     )
+                                my_dialog.open()
+                                s.close()
+                            else:
+                                s.close()
+                        else:
+                            s.close()
+
+                    except:
+                        my_dialog = MDDialog(title="Cannot connect server",
+                                             text="Please check your input and Internet connection",
+                                             )
+                        my_dialog.open()
+                        pass
+
+
+
                 else:
                     my_dialog = MDDialog(title="Error",
                                          text='Cancel booking period expired')
