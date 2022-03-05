@@ -302,38 +302,40 @@ class booking_system_serverside():
 
                 #print(str_e[12:len(str_e)-1])
                 connection.close()
+            if str_e != '':
+                connection2 = pymysql.connect(user='root',password='',db='comp5327test',cursorclass=pymysql.cursors.DictCursor)
+                with connection2.cursor() as cursor:
+                    sql2 = '''DELETE FROM Booking WHERE booking_id = "''' + str(confirmed_booking_id) + '''"'''
+                    cursor.execute(sql2)
+                    connection2.commit()
+                    connection2.close()
 
-            connection2 = pymysql.connect(user='root',password='',db='comp5327test',cursorclass=pymysql.cursors.DictCursor)
-            with connection2.cursor() as cursor:
-                sql2 = '''DELETE FROM Booking WHERE booking_id = "''' + str(confirmed_booking_id) + '''"'''
-                cursor.execute(sql2)
-                connection2.commit()
-                connection2.close()
+                connection3 = pymysql.connect(user='root', password='', db='comp5327test',
+                                            cursorclass=pymysql.cursors.DictCursor)
+                with connection3.cursor() as cursor:
+                    sql3 = '''SELECT vacancy FROM Timeslot WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
+                    cursor.execute(sql3)
 
-            connection3 = pymysql.connect(user='root', password='', db='comp5327test',
-                                          cursorclass=pymysql.cursors.DictCursor)
-            with connection3.cursor() as cursor:
-                sql3 = '''SELECT vacancy FROM Timeslot WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
-                cursor.execute(sql3)
+                    str_e2 = ''
 
-                str_e2 = ''
+                    for e in cursor.fetchall():
+                        # print(e)
+                        str_e2 += str(e)
 
-                for e in cursor.fetchall():
-                    # print(e)
-                    str_e2 += str(e)
+                    print(str_e2[12:len(str_e)-1])
+                    connection3.close()
 
-                print(str_e2[12:len(str_e)-1])
-                connection3.close()
+                connection4 = pymysql.connect(user='root', password='', db='comp5327test',
+                                                cursorclass=pymysql.cursors.DictCursor)
+                with connection4.cursor() as cursor:
+                    sql4 = '''UPDATE Timeslot SET vacancy = ''' + str(int(str_e2[12:len(str_e)-1])+1) + ''' WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
+                    cursor.execute(sql4)
+                    connection4.commit()
+                    connection4.close()
 
-            connection4 = pymysql.connect(user='root', password='', db='comp5327test',
-                                          cursorclass=pymysql.cursors.DictCursor)
-            with connection4.cursor() as cursor:
-                sql4 = '''UPDATE Timeslot SET vacancy = ''' + str(int(str_e2[12:len(str_e)-1])+1) + ''' WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
-                cursor.execute(sql4)
-                connection4.commit()
-                connection4.close()
-
-                cancel_reply = 'Done'
+                    cancel_reply = 'Done'
+            else:
+                cancel_reply = 'already'
             return cancel_reply
         except NameError as error:
             pass

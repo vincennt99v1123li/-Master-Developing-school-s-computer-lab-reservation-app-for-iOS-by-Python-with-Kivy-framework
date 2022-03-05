@@ -364,6 +364,12 @@ class TestPage(FloatLayout):
                                                      )
                                 my_dialog.open()
                                 s.close()
+                            elif cancel_feedback == 'already':
+                                my_dialog = MDDialog(title="Booking Canceled Before",
+                                                     text="Refresh this page to view your booking",
+                                                     )
+                                my_dialog.open()
+                                s.close()
                             else:
                                 s.close()
                         else:
@@ -555,49 +561,6 @@ class FilePage(BoxLayout):
         project_5327.screen_manager.current = 'test'
         pass
 
-# Simple information/error page
-class InfoPage(GridLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.cols = 1
-        self.message = Label(halign="center", valign="middle", font_size=30)
-        self.message.bind(width=self.update_text_width)
-        self.add_widget(self.message)
-
-        self.join = Button(text="back")
-        self.join.bind(on_press=self.back_button)
-        self.add_widget(Label())  # just take up the spot.
-        self.add_widget(self.join)
-
-    # Called with a message, to update message text in widget
-    def update_info(self, message):
-        self.message.text = message
-
-    # Called on label width update, so we can set text width properly - to 90% of label width
-    def update_text_width(self, *_):
-        self.message.text_size = (self.message.width * 0.9, None)
-
-    def back_button(self,instance):
-
-        project_5327.screen_manager.current = 'test'
-        pass
-
-
-
-class HomePage(GridLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-    def login_button(self):
-        username = self.username.text
-        pw = self.pw.text
-
-        if username == "test" and pw == "test":
-            print("hi")
-        pass
-
 
 
 class ProjectApp(MDApp):
@@ -621,25 +584,9 @@ class ProjectApp(MDApp):
         screen.add_widget(self.LoginPage)
         self.screen_manager.add_widget(screen)
 
-        # home page
-        self.HomePage = HomePage()
-        screen = Screen(name='home')
-        screen.add_widget(self.HomePage)
-        self.screen_manager.add_widget(screen)
-
         self.TestPage = TestPage()
         screen = Screen(name='test')
         screen.add_widget(self.TestPage)
-        self.screen_manager.add_widget(screen)
-
-        self.InfoPage = InfoPage()
-        screen = Screen(name='info')
-        screen.add_widget(self.InfoPage)
-        self.screen_manager.add_widget(screen)
-
-        self.FilePage = FilePage()
-        screen = Screen(name='file')
-        screen.add_widget(self.FilePage)
         self.screen_manager.add_widget(screen)
 
         return self.screen_manager
