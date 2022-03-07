@@ -236,7 +236,7 @@ class booking_system_serverside():
                                                           db='comp5327test',
                                                           cursorclass=pymysql.cursors.DictCursor)
                             with connection3.cursor() as cursor:
-                                sql3 = '''INSERT INTO `Booking` (`booking_id`, `Slot_id`, `Username`, `apply_date_time`) VALUES (NULL, "''' + str(selected_id) + '''" , "''' + str(confirmed_username) + '''" , "''' + str(current_date_time) + '''")'''
+                                sql3 = '''INSERT INTO `Booking` (`booking_id`, `Slot_id`, `Username`, `apply_date_time`, `Cancel`, `Cancel_date_time`) VALUES (NULL, "''' + str(selected_id) + '''" , "''' + str(confirmed_username) + '''" , "''' + str(current_date_time) + '''" , "", "")'''
                                 cursor.execute(sql3)
                                 connection3.commit()
                                 connection3.close()
@@ -269,13 +269,13 @@ class booking_system_serverside():
                                          db='comp5327test',
                                          cursorclass=pymysql.cursors.DictCursor)
             with connection.cursor() as cursor:
-                sql = '''SELECT Booking.booking_id, Booking.Slot_id, Booking.apply_date_time, Timeslot.date, Timeslot.time_slot FROM Booking Inner Join Timeslot on Booking.Slot_id=Timeslot.Slot_id WHERE Username = "''' + str(confirmed_username) + '''" order by Booking.booking_id DESC'''
+                sql = '''SELECT Booking.booking_id, Booking.Slot_id, Booking.apply_date_time, Timeslot.date, Timeslot.time_slot, Booking.Cancel, Booking.Cancel_date_time FROM Booking Inner Join Timeslot on Booking.Slot_id=Timeslot.Slot_id WHERE Username = "''' + str(confirmed_username) + '''" order by Booking.booking_id DESC'''
                 cursor.execute(sql)
 
                 str_e = ''
 
                 for e in cursor.fetchall():
-                    # print(e)
+                    print(e)
                     str_e += str(e)
                 connection.close()
                 print(str_e)
@@ -303,9 +303,12 @@ class booking_system_serverside():
                 #print(str_e[12:len(str_e)-1])
                 connection.close()
             if str_e != '':
+                now = datetime.now()
+                current_date = str(now.strftime("%Y-%m-%d %H:%M:%S"))
+
                 connection2 = pymysql.connect(user='root',password='',db='comp5327test',cursorclass=pymysql.cursors.DictCursor)
                 with connection2.cursor() as cursor:
-                    sql2 = '''DELETE FROM Booking WHERE booking_id = "''' + str(confirmed_booking_id) + '''"'''
+                    sql2 = '''UPDATE Booking set Cancel = "Yes", Cancel_date_time = "''' + str(current_date) + '''" WHERE booking_id = ''' + str(confirmed_booking_id)
                     cursor.execute(sql2)
                     connection2.commit()
                     connection2.close()

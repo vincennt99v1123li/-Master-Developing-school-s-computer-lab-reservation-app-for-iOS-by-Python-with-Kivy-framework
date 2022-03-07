@@ -413,7 +413,13 @@ class TestPage(FloatLayout):
                              buttons=[btn1])
         my_dialog.open()
 
-    def booking_history(self):
+    def cancel_history_popup(self, option_booking, option_slot_id, option_apply_date, option_date, option_time, option_cancel_date):
+
+        my_dialog = MDDialog(title="Reservation Details",
+                             text="Booking ID: " + option_booking + "\nSlot ID: " + option_slot_id + "\nDate: " + option_date + "\nTime: " + option_time + "\nApply time: " + option_apply_date + "\nCanceled time: " + option_cancel_date)
+        my_dialog.open()
+
+    def booking_history(self,input):
         try:
             s = socket.socket()
 
@@ -449,6 +455,8 @@ class TestPage(FloatLayout):
                 apply_date_list=[]
                 date_list=[]
                 time_slot_list=[]
+                cancel_list=[]
+                cancel_date_list=[]
                 while i < len(feedback_history):
                     if feedback_history[i] == ':' and var_order == 1 and a_or_b == 1:
                         location_a = i
@@ -489,34 +497,70 @@ class TestPage(FloatLayout):
                     elif feedback_history[i] == ':' and var_order == 5 and a_or_b == 1:
                         location_a = i
                         a_or_b = 2
-                    elif feedback_history[i] == '}' and var_order == 5 and a_or_b == 2:
+                    elif feedback_history[i] == ',' and var_order == 5 and a_or_b == 2:
                         location_b = i
                         a_or_b = 1
                         done = True
                         time_slot_list.append(feedback_history[location_a + 3:location_b - 1])
 
+                    elif feedback_history[i] == ':' and var_order == 6 and a_or_b == 1:
+                        location_a = i
+                        a_or_b = 2
+                    elif feedback_history[i] == ',' and var_order == 6 and a_or_b == 2:
+                        location_b = i
+                        a_or_b = 1
+                        done = True
+                        cancel_list.append(feedback_history[location_a + 3:location_b - 1])
 
-                    if var_order == 5 and a_or_b == 1 and done == True:
+                    elif feedback_history[i] == ':' and var_order == 7 and a_or_b == 1:
+                        location_a = i
+                        a_or_b = 2
+                    elif feedback_history[i] == '}' and var_order == 7 and a_or_b == 2:
+                        location_b = i
+                        a_or_b = 1
+                        done = True
+                        cancel_date_list.append(feedback_history[location_a + 3:location_b - 1])
+
+
+                    if var_order == 7 and a_or_b == 1 and done == True:
                         var_order = 1
                         done = False
-                    elif var_order < 5 and a_or_b == 1 and done == True:
+                    elif var_order < 7 and a_or_b == 1 and done == True:
                         var_order += 1
                         done = False
 
                     i += 1
 
+
+                print("print")
+                print(booking_id_list)
+                print(slot_id_list)
+                print(apply_date_list)
+                print(date_list)
+                print(time_slot_list)
+                print(cancel_list)
+                print(cancel_date_list)
+                print(input)
+
                 x=0
                 self.ids.history.clear_widgets()
+                self.ids.cancel_list.clear_widgets()
                 while x < len(booking_id_list):
                     option_booking = booking_id_list[x]
                     option_slot_id = slot_id_list[x]
                     option_apply_date = apply_date_list[x]
                     option_date = date_list[x]
                     option_time = time_slot_list[x]
+                    option_cancel_date = cancel_date_list[x]
 
                     f = lambda y, option_booking=option_booking, option_slot_id=option_slot_id, option_apply_date=option_apply_date, option_date=option_date, option_time=option_time: self.booking_history_popup(option_booking,option_slot_id,option_apply_date,option_date,option_time)
+                    f2 = lambda y, option_booking=option_booking, option_slot_id=option_slot_id,option_apply_date=option_apply_date, option_date=option_date, option_time=option_time, option_cancel_date=option_cancel_date : self.cancel_history_popup(option_booking, option_slot_id,option_apply_date, option_date,option_time,option_cancel_date)
 
-                    self.ids.history.add_widget(TwoLineListItem(text="Date & Timeslot: "+str(date_list[x]+" "+str(time_slot_list[x])),secondary_text="Booking ID: "+str(booking_id_list[x]), on_release=f))
+                    if str(cancel_list[x]) == '' and input == "history":
+                        self.ids.history.add_widget(TwoLineListItem(text="Date & Timeslot: "+str(date_list[x]+" "+str(time_slot_list[x])),secondary_text="Booking ID: "+str(booking_id_list[x]), on_release=f))
+                    elif str(cancel_list[x]) != '' and input == "cancel":
+                        self.ids.cancel_list.add_widget(TwoLineListItem(text="Date & Timeslot: " + str(date_list[x] + " " + str(time_slot_list[x])),secondary_text="Booking ID: " + str(booking_id_list[x]), on_release=f2))
+
                     x+=1
 
             else:
@@ -528,8 +572,6 @@ class TestPage(FloatLayout):
                                  )
             my_dialog.open()
             pass
-
-
 
     def confirm_logout_popup(self):
         btn1 = MDFlatButton(text="Yes",text_color=[0, 0, 1, 0])

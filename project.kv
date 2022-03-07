@@ -12,7 +12,7 @@
 
             MDLabel:
 
-                text: "Project 5327 App"
+                text: "Computer Lab Reservation"
                 halign: "center"
 
             MDFillRoundFlatButton:
@@ -91,13 +91,15 @@
 
     history:history
 
+    cancel_list:cancel_list
+
     username:username
 
     MDBoxLayout:
         orientation: 'vertical'
 
         MDToolbar:
-            title:"Project5327"
+            title:"Computer Lab Reservation"
 
         MDBottomNavigation:
             MDBottomNavigationItem:
@@ -157,7 +159,9 @@
                 name: "History"
                 text: 'History'
                 icon: "timetable"
-                on_tab_press: root.booking_history()
+                id: h
+                on_tab_press: root.booking_history('history')
+
 
                 BoxLayout:
                     size: root.width, root.height
@@ -167,6 +171,22 @@
                         size: self.size
                         MDList:
                             id: history
+
+            MDBottomNavigationItem:
+                name: "Canceled"
+                text: 'Canceled'
+                icon: "cancel"
+                on_tab_press: root.booking_history('cancel')
+
+
+                BoxLayout:
+                    size: root.width, root.height
+                    padding: 50
+
+                    ScrollView:
+                        size: self.size
+                        MDList:
+                            id: cancel_list
 
             MDBottomNavigationItem:
                 name: "Logout"
