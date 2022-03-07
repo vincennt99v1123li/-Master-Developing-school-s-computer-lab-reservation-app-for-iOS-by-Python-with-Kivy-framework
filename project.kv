@@ -83,6 +83,7 @@
 
 
 <TestPage>
+    tool_bar:tool_bar
 
     reservation_page:reservation_page
     date_label:date_label
@@ -99,6 +100,7 @@
         orientation: 'vertical'
 
         MDToolbar:
+            id:tool_bar
             title:"Computer Lab Reservation"
 
         MDBottomNavigation:
@@ -107,6 +109,7 @@
                 text: 'New'
                 icon: "timeline-plus-outline"
                 id: reservation_page
+                on_tab_press: root.reservation_page_button()
                 BoxLayout:
                     size: root.width, root.height
                     padding: 50
@@ -159,7 +162,7 @@
                 name: "History"
                 text: 'History'
                 icon: "timetable"
-                id: h
+
                 on_tab_press: root.booking_history('history')
 
 

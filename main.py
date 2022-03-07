@@ -123,43 +123,31 @@ class TestPage(FloatLayout):
 
         global confirmed_username
         self.ids.username.text = str(confirmed_username)
+        self.ids.tool_bar.title = "Logout"
 
-    def send_button(self):
-        input_box = self.input_box.text
-        input_address = self.input_address.text
-        input_port = self.input_port.text
-        print(input_box)
-        print(input_address)
-        print(input_port)
+    def reservation_page_button(self):
+        self.ids.tool_bar.title = "New Reservation"
 
-
-        s = socket.socket()
-
-        port = int(input_port)
-        full_address = str(input_address) + '.tcp.ngrok.io'
-        s.connect((full_address, port))
-
-        option="test"
-        s.sendall((option).encode('utf-8'))
-
-        feedback = str(s.recv(1024).decode())
-        print(s.recv(1024).decode())
-        s.close()
-
-        project_5327.InfoPage.update_info(feedback)
-        project_5327.screen_manager.current = 'info'
-
-        pass
-
-    def file_button(self):
-        project_5327.screen_manager.current = 'file'
-        pass
 
     def date_on_save(self, instance, value, date_range):
         #print(instance, value, date_range)
-        self.ids.date_label.text = str(value)
-        self.ids.time_label.text = 'Selected Timeslot: N/A'
-        self.ids.slot_id_label.text = ''
+
+        now = datetime.now()
+        current_date = str(now.strftime("%Y-%m-%d"))
+
+
+
+
+        if int(str(value)[:4]) > int(current_date[:4]) or int(str(value)[:4]) == int(current_date[:4]) and int(current_date[4:7]) > int(str(value)[4:7]) or int(str(value)[:4]) == int(current_date[:4]) and int(current_date[4:7]) == int(str(value)[4:7]) and int(current_date[7:]) >= int(str(value)[7:]):
+
+            self.ids.date_label.text = str(value)
+            self.ids.time_label.text = 'Selected Timeslot: N/A'
+            self.ids.slot_id_label.text = ''
+
+        else:
+            my_dialog = MDDialog(title="Error",
+                                 text="Please select today/future date to continue")
+            my_dialog.open()
 
     def Show_Date_Picker(self):
         date_dialog = MDDatePicker()
@@ -334,64 +322,47 @@ class TestPage(FloatLayout):
         current_date = str(now.strftime("%Y-%m-%d"))
 
         print("print")
-        if int(current_date[:4]) <= int(option_date[:4]):
 
-            if int(current_date[4:7]) <= int(option_date[4:7]):
+        if int(current_date[:4]) < int(option_date[:4]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[4:7]) < int(option_date[4:7]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[4:7]) == int(option_date[4:7]) and int(current_date[8:10]) < int(option_date[8:10]):
 
 
-                if int(current_date[8:10]) <= int(option_date[8:10]):
-                    try:
-                        s = socket.socket()
+            try:
+                s = socket.socket()
 
-                        global confirmed_port
-                        global confirmed_address
+                global confirmed_port
+                global confirmed_address
 
-                        port = int(confirmed_port)
-                        full_address = str(confirmed_address) + '.tcp.ngrok.io'
-                        s.connect((full_address, port))
+                port = int(confirmed_port)
+                full_address = str(confirmed_address) + '.tcp.ngrok.io'
+                s.connect((full_address, port))
 
-                        option = "cancel_booking"
-                        s.sendall((option).encode('utf-8'))
+                option = "cancel_booking"
+                s.sendall((option).encode('utf-8'))
 
-                        feedback = str(s.recv(1024).decode('utf-8'))
-                        if feedback == "OK":
-                            s.sendall((option_booking).encode('utf-8'))
-                            cancel_feedback = str(s.recv(1024).decode('utf-8'))
+                feedback = str(s.recv(1024).decode('utf-8'))
+                if feedback == "OK":
+                    s.sendall((option_booking).encode('utf-8'))
+                    cancel_feedback = str(s.recv(1024).decode('utf-8'))
 
-                            if cancel_feedback == 'Done':
-                                my_dialog = MDDialog(title="Booking Canceled",
-                                                     text="Refresh this page to view your booking",
-                                                     )
-                                my_dialog.open()
-                                s.close()
-                            elif cancel_feedback == 'error':
-                                my_dialog = MDDialog(title="Error",
-                                                     text="Booking not exist",
-                                                     )
-                                my_dialog.open()
-                                s.close()
-                            else:
-                                s.close()
-                        else:
-                            s.close()
-
-                    except:
-                        my_dialog = MDDialog(title="Cannot connect server",
-                                             text="Please check your input and Internet connection",
-                                             )
+                    if cancel_feedback == 'Done':
+                        my_dialog = MDDialog(title="Booking Canceled",text="Refresh this page to view your booking",)
                         my_dialog.open()
-                        pass
-
-
-
+                        s.close()
+                    elif cancel_feedback == 'error':
+                        my_dialog = MDDialog(title="Error",text="Booking not exist", )
+                        my_dialog.open()
+                        s.close()
+                    else:
+                        s.close()
                 else:
-                    my_dialog = MDDialog(title="Error",
-                                         text='Cancel booking period expired')
-                    my_dialog.open()
-            else:
-                my_dialog = MDDialog(title="Error",
-                                     text='Cancel booking period expired')
+                    s.close()
+
+            except:
+                my_dialog = MDDialog(title="Cannot connect server",text="Please check your input and Internet connection", )
                 my_dialog.open()
+                pass
+
+
         else:
             my_dialog = MDDialog(title="Error",
                                  text='Cancel booking period expired')
@@ -421,6 +392,12 @@ class TestPage(FloatLayout):
 
     def booking_history(self,input):
         try:
+
+            if input == "history":
+                self.ids.tool_bar.title = "Booking Record"
+            elif input == "cancel":
+                self.ids.tool_bar.title = "Cancelled Booking Record"
+
             s = socket.socket()
 
             global confirmed_port
@@ -439,24 +416,26 @@ class TestPage(FloatLayout):
 
                 s.sendall((confirmed_username).encode('utf-8'))
 
-                feedback_history = str(s.recv(1024).decode('utf-8'))
-                s.close()
-
+                feedback_history = str(s.recv(1073741824).decode('utf-8'))
 
                 i = 0
-                var_order=1
+                var_order = 1
                 a_or_b = 1
-                done= False
+                done = False
                 location_a = 0
                 location_b = 0
 
-                booking_id_list=[]
-                slot_id_list=[]
-                apply_date_list=[]
-                date_list=[]
-                time_slot_list=[]
-                cancel_list=[]
-                cancel_date_list=[]
+                booking_id_list = []
+                slot_id_list = []
+                apply_date_list = []
+                date_list = []
+                time_slot_list = []
+                cancel_list = []
+                cancel_date_list = []
+
+                print("print")
+                print(feedback_history)
+
                 while i < len(feedback_history):
                     if feedback_history[i] == ':' and var_order == 1 and a_or_b == 1:
                         location_a = i
@@ -483,7 +462,7 @@ class TestPage(FloatLayout):
                         location_b = i
                         a_or_b = 1
                         done = True
-                        apply_date_list.append(feedback_history[location_a+3:location_b-1])
+                        apply_date_list.append(feedback_history[location_a + 3:location_b - 1])
 
                     if feedback_history[i] == ':' and var_order == 4 and a_or_b == 1:
                         location_a = i
@@ -492,7 +471,7 @@ class TestPage(FloatLayout):
                         location_b = i
                         a_or_b = 1
                         done = True
-                        date_list.append(feedback_history[location_a+3:location_b-1])
+                        date_list.append(feedback_history[location_a + 3:location_b - 1])
 
                     elif feedback_history[i] == ':' and var_order == 5 and a_or_b == 1:
                         location_a = i
@@ -521,7 +500,6 @@ class TestPage(FloatLayout):
                         done = True
                         cancel_date_list.append(feedback_history[location_a + 3:location_b - 1])
 
-
                     if var_order == 7 and a_or_b == 1 and done == True:
                         var_order = 1
                         done = False
@@ -530,8 +508,7 @@ class TestPage(FloatLayout):
                         done = False
 
                     i += 1
-
-
+                '''
                 print("print")
                 print(booking_id_list)
                 print(slot_id_list)
@@ -541,8 +518,8 @@ class TestPage(FloatLayout):
                 print(cancel_list)
                 print(cancel_date_list)
                 print(input)
-
-                x=0
+                '''
+                x = 0
                 self.ids.history.clear_widgets()
                 self.ids.cancel_list.clear_widgets()
                 while x < len(booking_id_list):
@@ -553,24 +530,31 @@ class TestPage(FloatLayout):
                     option_time = time_slot_list[x]
                     option_cancel_date = cancel_date_list[x]
 
-                    f = lambda y, option_booking=option_booking, option_slot_id=option_slot_id, option_apply_date=option_apply_date, option_date=option_date, option_time=option_time: self.booking_history_popup(option_booking,option_slot_id,option_apply_date,option_date,option_time)
-                    f2 = lambda y, option_booking=option_booking, option_slot_id=option_slot_id,option_apply_date=option_apply_date, option_date=option_date, option_time=option_time, option_cancel_date=option_cancel_date : self.cancel_history_popup(option_booking, option_slot_id,option_apply_date, option_date,option_time,option_cancel_date)
+                    f = lambda y, option_booking=option_booking, option_slot_id=option_slot_id,option_apply_date=option_apply_date, option_date=option_date,option_time=option_time: self.booking_history_popup(option_booking, option_slot_id,option_apply_date, option_date,option_time)
+                    f2 = lambda y, option_booking=option_booking, option_slot_id=option_slot_id,option_apply_date=option_apply_date, option_date=option_date, option_time=option_time,option_cancel_date=option_cancel_date: self.cancel_history_popup(option_booking,option_slot_id,option_apply_date,option_date,option_time,option_cancel_date)
 
                     if str(cancel_list[x]) == '' and input == "history":
-                        self.ids.history.add_widget(TwoLineListItem(text="Date & Timeslot: "+str(date_list[x]+" "+str(time_slot_list[x])),secondary_text="Booking ID: "+str(booking_id_list[x]), on_release=f))
+                        self.ids.history.add_widget(
+                            TwoLineListItem(text="Date & Timeslot: " + str(date_list[x] + " " + str(time_slot_list[x])),
+                                            secondary_text="Booking ID: " + str(booking_id_list[x]), on_release=f))
                     elif str(cancel_list[x]) != '' and input == "cancel":
-                        self.ids.cancel_list.add_widget(TwoLineListItem(text="Date & Timeslot: " + str(date_list[x] + " " + str(time_slot_list[x])),secondary_text="Booking ID: " + str(booking_id_list[x]), on_release=f2))
+                        print("hi print")
+                        self.ids.cancel_list.add_widget(
+                            TwoLineListItem(text="Date & Timeslot: " + str(date_list[x] + " " + str(time_slot_list[x])),
+                                            secondary_text="Booking ID: " + str(booking_id_list[x]), on_release=f2))
 
-                    x+=1
+                    x += 1
 
             else:
                 s.close()
 
         except:
+
             my_dialog = MDDialog(title="Cannot connect server",
                                  text="Please check your input and Internet connection",
                                  )
             my_dialog.open()
+
             pass
 
     def confirm_logout_popup(self):

@@ -93,6 +93,7 @@ class booking_system_serverside():
 
                 history_reply = ''
                 history_reply = str(self.booking_check(confirmed_username, history_reply))
+
                 c.send(history_reply.encode('utf-8'))
                 c.close()
             elif option == "cancel_booking":
@@ -215,7 +216,7 @@ class booking_system_serverside():
                                                  db='comp5327test',
                                                  cursorclass=pymysql.cursors.DictCursor)
                     with connection2.cursor() as cursor:
-                        sql2 = '''SELECT booking_id from Booking where Slot_id = "''' + str(selected_id) +'''" and Username = "''' + str(confirmed_username) + '''"'''
+                        sql2 = '''SELECT booking_id from Booking where Slot_id = "''' + str(selected_id) +'''" and Cancel = "" and Username = "''' + str(confirmed_username) + '''"'''
                         cursor.execute(sql2)
 
                         str_e2 = ''
@@ -275,7 +276,7 @@ class booking_system_serverside():
                 str_e = ''
 
                 for e in cursor.fetchall():
-                    print(e)
+                    #print(e)
                     str_e += str(e)
                 connection.close()
                 print(str_e)
