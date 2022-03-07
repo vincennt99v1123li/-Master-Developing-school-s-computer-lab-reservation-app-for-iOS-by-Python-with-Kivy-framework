@@ -338,7 +338,7 @@ class booking_system_serverside():
 
                     cancel_reply = 'Done'
             else:
-                cancel_reply = 'already'
+                cancel_reply = 'error'
             return cancel_reply
         except NameError as error:
             pass

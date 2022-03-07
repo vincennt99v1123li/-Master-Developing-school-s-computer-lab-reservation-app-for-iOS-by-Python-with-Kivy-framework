@@ -364,9 +364,9 @@ class TestPage(FloatLayout):
                                                      )
                                 my_dialog.open()
                                 s.close()
-                            elif cancel_feedback == 'already':
-                                my_dialog = MDDialog(title="Booking Canceled Before",
-                                                     text="Refresh this page to view your booking",
+                            elif cancel_feedback == 'error':
+                                my_dialog = MDDialog(title="Error",
+                                                     text="Booking not exist",
                                                      )
                                 my_dialog.open()
                                 s.close()
