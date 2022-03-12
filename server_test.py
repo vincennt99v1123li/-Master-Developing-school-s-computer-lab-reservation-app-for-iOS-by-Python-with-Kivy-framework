@@ -326,13 +326,14 @@ class booking_system_serverside():
                         # print(e)
                         str_e2 += str(e)
 
-                    print(str_e2[12:len(str_e)-1])
+
+                    print(str_e2[12:(len(str_e2)-1)])
                     connection3.close()
 
                 connection4 = pymysql.connect(user='root', password='', db='comp5327test',
                                                 cursorclass=pymysql.cursors.DictCursor)
                 with connection4.cursor() as cursor:
-                    sql4 = '''UPDATE Timeslot SET vacancy = ''' + str(int(str_e2[12:len(str_e)-1])+1) + ''' WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
+                    sql4 = '''UPDATE Timeslot SET vacancy = ''' + str(int(str_e2[12:len(str_e2)-1])+1) + ''' WHERE Slot_id = ''' + str(str_e[12:len(str_e)-1])
                     cursor.execute(sql4)
                     connection4.commit()
                     connection4.close()
