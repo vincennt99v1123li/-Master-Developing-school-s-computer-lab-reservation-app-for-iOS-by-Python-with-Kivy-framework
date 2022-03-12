@@ -322,8 +322,10 @@ class TestPage(FloatLayout):
         current_date = str(now.strftime("%Y-%m-%d"))
 
         print("print")
-
-        if int(current_date[:4]) < int(option_date[:4]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[4:7]) < int(option_date[4:7]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[4:7]) == int(option_date[4:7]) and int(current_date[8:10]) < int(option_date[8:10]):
+        #print((current_date[5:7]))
+        #print((option_date[5:7]))
+        #print(int(current_date[4:7]) < int(option_date[4:7]))
+        if int(current_date[:4]) < int(option_date[:4]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[5:7]) < int(option_date[5:7]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[5:7]) == int(option_date[5:7]) and int(current_date[8:10]) < int(option_date[8:10]):
 
 
             try:
