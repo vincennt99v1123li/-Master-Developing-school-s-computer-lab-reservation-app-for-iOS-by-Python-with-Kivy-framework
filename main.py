@@ -135,9 +135,7 @@ class TestPage(FloatLayout):
         now = datetime.now()
         current_date = str(now.strftime("%Y-%m-%d"))
 
-
-
-
+        #Check if the data selected valid
         if int(str(value)[:4]) > int(current_date[:4]) or int(str(value)[:4]) == int(current_date[:4]) and int(current_date[4:7]) > int(str(value)[4:7]) or int(str(value)[:4]) == int(current_date[:4]) and int(current_date[4:7]) == int(str(value)[4:7]) and int(current_date[7:]) >= int(str(value)[7:]):
 
             self.ids.date_label.text = str(value)
@@ -191,6 +189,7 @@ class TestPage(FloatLayout):
                     slot_id_list = []
                     time_slot_list = []
 
+                    # spilt the data to slot_id and time_slot
                     while i < len(feedback_timeslot):
 
                         if feedback_timeslot[i] == ':' and var_order == 1:
@@ -218,6 +217,7 @@ class TestPage(FloatLayout):
                         i = 0
                         option_list = []
 
+                        # list all available timeslot
                         while i < len(time_slot_list):
                             option_str_timeslot = str(time_slot_list[i])
                             option_str_id = str(slot_id_list[i])
@@ -325,6 +325,8 @@ class TestPage(FloatLayout):
         #print((current_date[5:7]))
         #print((option_date[5:7]))
         #print(int(current_date[4:7]) < int(option_date[4:7]))
+
+        #check if cancel booking period expired
         if int(current_date[:4]) < int(option_date[:4]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[5:7]) < int(option_date[5:7]) or int(current_date[:4]) == int(option_date[:4]) and int(current_date[5:7]) == int(option_date[5:7]) and int(current_date[8:10]) < int(option_date[8:10]):
 
 
@@ -438,6 +440,7 @@ class TestPage(FloatLayout):
                 print("print")
                 print(feedback_history)
 
+                #spilt record according to their type
                 while i < len(feedback_history):
                     if feedback_history[i] == ':' and var_order == 1 and a_or_b == 1:
                         location_a = i
@@ -612,6 +615,7 @@ class ProjectApp(MDApp):
         screen.add_widget(self.LoginPage)
         self.screen_manager.add_widget(screen)
 
+        # test page
         self.TestPage = TestPage()
         screen = Screen(name='test')
         screen.add_widget(self.TestPage)
